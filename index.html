@@ -7,20 +7,34 @@
     <title>Drag and drop</title>
   </head>
   <body>
-    <div class="list" id="todo">
-      <div class="list__card" draggable="true"></div>
-      <div class="list__card" draggable="true"></div>
-      <div class="list__card" draggable="true"></div>
-      <form class="form" id="form">
-        <input type="text" id="title" />
-        <input type="text" id="description" />
-        <button type="submit" id="addNoteBtn"></button>
-      </form>
+    <div class="flex">
+      <div class="list" id="">
+        <div class="wrapper" id="todo"></div>
+        <form class="form" id="form">
+          <input
+            class="input mrg-b-30"
+            type="text"
+            id="title"
+            placeholder="Title:"
+          />
+          <input
+            class="input mrg-b-30"
+            type="text"
+            id="description"
+            placeholder="Description:"
+          />
+          <input
+            type="submit"
+            id="addNoteBtn"
+            class="button mrg-b-30"
+            value="Добавить"
+          />
+        </form>
+      </div>
+      <div class="list" id=""><div class="wrapper" id="inProgress"></div></div>
+      <div class="list" id=""><div class="wrapper" id="done"></div></div>
+      <div class="list" id=""><div class="wrapper" id="remove"></div></div>
     </div>
-    <div class="list" id="inProgress"></div>
-    <div class="list" id="done"></div>
-    <div class="list" id="remove"></div>
-
     <script src="app.js"></script>
   </body>
 </html>
