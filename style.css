@@ -47,31 +47,25 @@ body {
 }
 
 .list__card {
-  width: 240px;
-  padding: 5px;
+  width: 167px;
+  padding: 1px;
   height: 100%;
 }
 
 .list-border {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   border: 5px solid coral;
   margin-bottom: 10px;
   margin-top: 10px;
+  padding: 4px;
 }
 
 .list__card_notes {
   display: flex;
   flex-wrap: wrap;
   width: 100px;
-}
-
-.form {
-  /* position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 30px;
-  left: 15px; */
 }
 
 .note {
@@ -91,13 +85,14 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
+  flex-direction: column;
   align-self: baseline;
-  width: 130px;
+  width: 27px;
 }
 
 .button-note {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
 }
 
@@ -123,6 +118,9 @@ body {
 input {
   outline: none;
 }
+p {
+  margin: 7px 0;
+}
 .input {
   border: 3px solid rgb(255, 100, 61);
   width: 150px;
@@ -138,7 +136,7 @@ input {
 }
 
 .mrg-b-30 {
-  margin: 0 15px 10px;
+  margin: 0 10px 10px;
 }
 
 .modal {

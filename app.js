@@ -1,22 +1,32 @@
+const tasker = document.querySelector(".flex");
 const listes = document.querySelectorAll(".list");
 const form = document.querySelector("#form");
 let listCards = document.querySelectorAll(".list__card");
 const addNoteBtn = document.querySelector("#addNoteBtn");
 
+// Объект и 4 массива
 let notes = {
   todo: [],
   inProgress: [],
   done: [],
   remove: [],
 };
+// Для drag and drop
 let storageIndex = 0;
 let bufArray = [];
+// Для edit
+const modal = document.querySelector(".modal");
+const inputTitle = document.querySelector("#modal-title");
+const inputDescription = document.querySelector("#modal-description");
+let bufList = 0;
+let listId = 0;
 
 // Функция push in array
 const pushArray = (id, title, description) => {
   notes[id].push({ title: title, description: description });
 };
 
+// Функция отрисовки (draw)
 const drawList = (id, list) => {
   list.innerHTML = "";
 
@@ -40,6 +50,7 @@ const drawList = (id, list) => {
   });
 };
 
+// Привязка drag and drop functions
 const addEventDrag = () => {
   listCards = document.querySelectorAll(".list__card");
   for (const card of listCards) {
@@ -54,6 +65,7 @@ const addEventDrag = () => {
   }
 };
 
+// Событие по кнопке Добавить
 addNoteBtn.addEventListener("click" || "keyup", (event) => {
   event.preventDefault();
   if (event.code === "Enter" || event.type === "click") {
@@ -73,22 +85,79 @@ addNoteBtn.addEventListener("click" || "keyup", (event) => {
   }
 });
 
-const dragArray = (event) => {
-  const list = event.target.closest(".wrapper"); // откуда взяли (list)
-  const listCard = event.target.closest(".list__card");
-  const listId = list.getAttribute("id"); // какой массив
-  debugger;
+// Функция редактирования. Работа с madal
+const openModal = () => (modal.style.display = "block");
+
+const closeModal = () => {
+  modal.style.display = "none";
+};
+
+const editNote = (event) => {
+  const listCard = event.target.closest(".list-border");
+  const list = event.target.closest(".wrapper");
   const title = listCard.querySelector(".note-name").textContent;
   const description = listCard.querySelector(".note-description").textContent;
+  listId = list.getAttribute("id"); // какой массив
+
+  inputTitle.value = title;
+  inputDescription.value = description;
 
   storageIndex = notes[listId].findIndex(
     (elem) => elem.title === title && elem.description === description
   );
-
-  bufArray = notes[listId].slice(storageIndex, storageIndex + 1);
-  notes[listId].splice(storageIndex, 1);
+  bufList = list;
+  openModal();
 };
 
+const spliceEditArray = (
+  id = listId,
+  title = inputTitle,
+  description = inputDescription,
+  index = storageIndex
+) => {
+  notes[id].splice(index, 1, {
+    title: title.value,
+    description: description.value,
+  });
+};
+
+const editApply = (event) => {
+  event.preventDefault();
+
+  spliceEditArray();
+
+  closeModal();
+
+  drawList(listId, bufList);
+
+  addEventDrag();
+};
+
+modal.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (event.target.closest("#btnModalApply")) {
+    editApply(event);
+  } else if (
+    !event.target.closest(".modal__wrapper") ||
+    event.target.closest("#btnModalClose")
+  ) {
+    event.preventDefault();
+    closeModal();
+  }
+});
+
+tasker.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  if (event.target.closest(".button-edit")) {
+    editNote(event);
+  } else if (event.target.closest(".button-next")) {
+  } else if (event.target.closest(".button-remove")) {
+    removeNote(event);
+  }
+});
+
+// functions drag and drop
 function dragStart(event) {
   const list = event.target.closest(".wrapper"); // откуда взяли (list)
   const listCard = event.target.closest(".list__card");
