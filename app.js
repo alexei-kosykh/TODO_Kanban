@@ -14,6 +14,7 @@ let notes = {
 // Для drag and drop
 let storageIndex = 0;
 let bufArray = [];
+
 // Для edit
 const modal = document.querySelector(".modal");
 const inputTitle = document.querySelector("#modal-title");
@@ -236,13 +237,14 @@ tasker.addEventListener("click", (event) => {
 function dragStart(event) {
   const list = event.target.closest(".wrapper"); // откуда взяли (list)
   const listCard = event.target.closest(".list__card");
-  const listId = list.getAttribute("id"); // какой массив
+  const listWrapId = list.getAttribute("id"); // какой массив
   const title = listCard.querySelector(".note-name").textContent;
   const description = listCard.querySelector(".note-description").textContent;
 
-  searchIndex(listId, title, description);
+  searchIndex(listWrapId, title, description);
 
-  cutArrayValue(listId);
+  cutArrayValue(listWrapId);
+  listId = listWrapId;
 
   this.className += " hold";
   setTimeout(() => (this.className = "invisible"), 0);
@@ -251,6 +253,12 @@ function dragStart(event) {
 
 function dragEnd() {
   this.className = "list__card";
+
+  if (!(bufArray === [])) {
+    pushArray(listId, bufArray[0].title, bufArray[0].description);
+    bufArray = [];
+    listId = 0;
+  }
 }
 
 // Drop
@@ -280,10 +288,10 @@ function dragDrop(event) {
       const listId = list.getAttribute("id");
 
       appendArrayCard(card, list);
-
       pushArray(listId, bufArray[0].title, bufArray[0].description);
+
       bufArray = [];
-      console.log(notes);
+      listId = 0;
       break;
     }
   }
