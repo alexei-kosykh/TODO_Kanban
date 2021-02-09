@@ -4,12 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>Drag and drop</title>
+    <title>TO DO list</title>
   </head>
   <body>
     <div class="flex">
       <div class="list" id="">
+        <div class="list__header">To Do</div>
         <div class="wrapper" id="todo"></div>
+        <figure class="button-open button-note"></figure>
         <form class="form" id="form">
           <input
             class="input mrg-b-30"
@@ -31,9 +33,16 @@
           />
         </form>
       </div>
-      <div class="list" id=""><div class="wrapper" id="inProgress"></div></div>
-      <div class="list" id=""><div class="wrapper" id="done"></div></div>
       <div class="list" id="">
+        <div class="list__header">In Progress</div>
+        <div class="wrapper" id="inProgress"></div>
+      </div>
+      <div class="list" id="">
+        <div class="list__header">Done</div>
+        <div class="wrapper" id="done"></div>
+      </div>
+      <div class="list" id="">
+        <div class="list__header">Deleted</div>
         <figure
           class="button-remove-all button-note"
           id="removeAllNotes"

@@ -1,6 +1,5 @@
 const tasker = document.querySelector(".flex");
 const listes = document.querySelectorAll(".list");
-const form = document.querySelector("#form");
 let listCards = document.querySelectorAll(".list__card");
 const addNoteBtn = document.querySelector("#addNoteBtn");
 const removeAllNotes = document.querySelector("#removeAllNotes");
@@ -88,7 +87,6 @@ const addEventDrag = () => {
 addNoteBtn.addEventListener("click" || "keyup", (event) => {
   event.preventDefault();
   if (event.code === "Enter" || event.type === "click") {
-    event.preventDefault();
     const title = document.querySelector("#title").value;
     const description = document.querySelector("#description").value;
     const list = event.target.closest(".list");
@@ -100,7 +98,9 @@ addNoteBtn.addEventListener("click" || "keyup", (event) => {
 
     addEventDrag();
 
-    form.reset();
+    const listForm = list.querySelector(".form");
+    listForm.style.display = "none";
+    listForm.reset();
   }
 });
 
@@ -111,6 +111,7 @@ const closeModal = () => {
   modal.style.display = "none";
 };
 
+// Открытие окна редактирования
 const editNote = (event) => {
   const listCard = event.target.closest(".list-border");
   const list = event.target.closest(".wrapper");
@@ -127,6 +128,7 @@ const editNote = (event) => {
   openModal();
 };
 
+// Функция замены значений в массиве
 const spliceEditArray = (
   id = listId,
   title = inputTitle,
@@ -139,6 +141,7 @@ const spliceEditArray = (
   });
 };
 
+// Закртие редактирования и сохранение
 const editApply = (event) => {
   event.preventDefault();
 
@@ -151,6 +154,7 @@ const editApply = (event) => {
   addEventDrag();
 };
 
+// Обновить текущий лист (для удаления и переноса)
 const updateList = (listId, title, description, listWrap) => {
   searchIndex(listId, title, description);
 
@@ -159,6 +163,7 @@ const updateList = (listId, title, description, listWrap) => {
   drawList(listId, listWrap);
 };
 
+// Обновить следующий лист (для удаления и переноса)
 const updateNewList = (id, wrap) => {
   pushArray(id, bufArray[0].title, bufArray[0].description);
   bufArray = [];
@@ -166,6 +171,7 @@ const updateNewList = (id, wrap) => {
   drawList(id, wrap);
 };
 
+// Функция перемещения
 const moveNote = (event) => {
   event.preventDefault();
 
@@ -189,6 +195,7 @@ const moveNote = (event) => {
   addEventDrag();
 };
 
+// Функция удаления
 const removeNote = (event) => {
   event.preventDefault();
 
@@ -209,6 +216,7 @@ const removeNote = (event) => {
   addEventDrag();
 };
 
+// Очистка всего содержимого листа
 removeAllNotes.addEventListener("click", (event) => {
   event.preventDefault();
 
@@ -223,6 +231,16 @@ removeAllNotes.addEventListener("click", (event) => {
   addEventDrag();
 });
 
+// кнопка открытия формы
+const openForm = (event) => {
+  event.preventDefault();
+
+  const list = event.target.closest(".list");
+  const listForm = list.querySelector(".form");
+  listForm.style.display = "flex";
+};
+
+// Делегирование событий модального окна
 modal.addEventListener("click", (event) => {
   event.preventDefault();
   if (event.target.closest("#btnModalApply")) {
@@ -236,6 +254,7 @@ modal.addEventListener("click", (event) => {
   }
 });
 
+// Делегирование событий для кнопок
 tasker.addEventListener("click", (event) => {
   event.preventDefault();
 
@@ -245,6 +264,8 @@ tasker.addEventListener("click", (event) => {
     moveNote(event);
   } else if (event.target.closest(".button-remove")) {
     removeNote(event);
+  } else if (event.target.closest(".button-open")) {
+    openForm(event);
   }
 });
 
@@ -276,7 +297,6 @@ function dragEnd() {
   bufArray = [];
 }
 
-// Drop
 function dragOver(event) {
   event.preventDefault();
 }
