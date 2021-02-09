@@ -21,6 +21,21 @@ const inputDescription = document.querySelector("#modal-description");
 let bufList = 0;
 let listId = 0;
 
+// Функция поиска индекса
+const searchIndex = (id, title, description) => {
+  storageIndex = notes[id].findIndex(
+    (elem) => elem.title === title && elem.description === description
+  );
+};
+
+// Функция вырезать из массива
+const cutArrayValue = (listId) => {
+  bufArray = notes[listId].slice(storageIndex, storageIndex + 1);
+  notes[listId].splice(storageIndex, 1);
+};
+
+// Функция вставки карточки
+const appendArrayCard = (card, list) => list.append(card);
 // Функция push in array
 const pushArray = (id, title, description) => {
   notes[id].push({ title: title, description: description });
@@ -30,8 +45,9 @@ const pushArray = (id, title, description) => {
 const drawList = (id, list) => {
   list.innerHTML = "";
 
-  notes[id].forEach((elem) => {
-    list.innerHTML += `<div class="list__card" draggable="true"><div class="list-border"><div class="list__card_notes">
+  if (id) {
+    notes[id].forEach((elem) => {
+      list.innerHTML += `<div class="list__card" draggable="true"><div class="list-border"><div class="list__card_notes">
         <div class="note">
           <p>Title: <span class="note-name">${elem.title}</span></p>
         </div>
@@ -47,7 +63,8 @@ const drawList = (id, list) => {
         <div class="button-note button-next"></div>
         <div class="button-note button-remove"></div>
       </div></div></div>`;
-  });
+    });
+  }
 };
 
 // Привязка drag and drop functions
@@ -102,9 +119,8 @@ const editNote = (event) => {
   inputTitle.value = title;
   inputDescription.value = description;
 
-  storageIndex = notes[listId].findIndex(
-    (elem) => elem.title === title && elem.description === description
-  );
+  searchIndex(listId, title, description);
+
   bufList = list;
   openModal();
 };
@@ -133,6 +149,64 @@ const editApply = (event) => {
   addEventDrag();
 };
 
+const updateList = (listId, title, description, listWrap) => {
+  searchIndex(listId, title, description);
+
+  cutArrayValue(listId);
+
+  drawList(listId, listWrap);
+};
+
+const updateNewList = (id, wrap) => {
+  pushArray(id, bufArray[0].title, bufArray[0].description);
+  bufArray = [];
+
+  drawList(id, wrap);
+};
+
+const moveNote = (event) => {
+  event.preventDefault();
+
+  const list = event.target.closest(".list");
+  const listWrap = event.target.closest(".wrapper");
+  const listCard = event.target.closest(".list__card");
+  const title = listCard.querySelector(".note-name").textContent;
+
+  const description = listCard.querySelector(".note-description").textContent;
+  const listId = listWrap.getAttribute("id");
+
+  if (!(listId === "remove")) {
+    updateList(listId, title, description, listWrap);
+
+    const listNext = list.nextElementSibling;
+    const listNextWrap = listNext.querySelector(".wrapper");
+    const listNextId = listNextWrap.getAttribute("id");
+
+    updateNewList(listNextId, listNextWrap);
+  }
+  addEventDrag();
+};
+
+const removeNote = (event) => {
+  event.preventDefault();
+
+  const listWrap = event.target.closest(".wrapper");
+  const listCard = event.target.closest(".list__card");
+  const title = listCard.querySelector(".note-name").textContent;
+  const description = listCard.querySelector(".note-description").textContent;
+  const listId = listWrap.getAttribute("id");
+
+  updateList(listId, title, description, listWrap);
+
+  const listDel = tasker.lastElementChild;
+  const listDelWrap = listDel.querySelector(".wrapper");
+  const listDelId = "remove";
+
+  updateNewList(listDelId, listDelWrap);
+
+  addEventDrag();
+};
+
 modal.addEventListener("click", (event) => {
   event.preventDefault();
   if (event.target.closest("#btnModalApply")) {
@@ -152,6 +226,7 @@ tasker.addEventListener("click", (event) => {
   if (event.target.closest(".button-edit")) {
     editNote(event);
   } else if (event.target.closest(".button-next")) {
+    moveNote(event);
   } else if (event.target.closest(".button-remove")) {
     removeNote(event);
   }
@@ -165,15 +240,10 @@ function dragStart(event) {
   const title = listCard.querySelector(".note-name").textContent;
   const description = listCard.querySelector(".note-description").textContent;
 
-  storageIndex = notes[listId].findIndex(
-    (elem) => elem.title === title && elem.description === description
-  );
+  searchIndex(listId, title, description);
 
-  bufArray = notes[listId].slice(storageIndex, storageIndex + 1);
-  notes[listId].splice(storageIndex, 1);
+  cutArrayValue(listId);
 
-  console.log(this);
-  console.log(this.className);
   this.className += " hold";
   setTimeout(() => (this.className = "invisible"), 0);
   listCard.setAttribute("data-drag", "drag");
@@ -203,16 +273,17 @@ function dragDrop(event) {
     if (card.hasAttribute("data-drag")) {
       card.removeAttribute("data-drag");
       this.className = "list";
-
       card.setAttribute("class", "list__card");
 
-      const target = event.currentTarget; // откуда взяли (list)
-      const list = target.querySelector(".wrapper"); // откуда взяли (list)
-      const listId = list.getAttribute("id"); // какой массив
-      list.append(card);
+      const target = event.currentTarget;
+      const list = target.querySelector(".wrapper");
+      const listId = list.getAttribute("id");
+
+      appendArrayCard(card, list);
+
       pushArray(listId, bufArray[0].title, bufArray[0].description);
-      console.log("bufArray", bufArray, "Array", notes);
       bufArray = [];
+      console.log(notes);
       break;
     }
   }
