@@ -3,6 +3,7 @@ const listes = document.querySelectorAll(".list");
 const form = document.querySelector("#form");
 let listCards = document.querySelectorAll(".list__card");
 const addNoteBtn = document.querySelector("#addNoteBtn");
+const removeAllNotes = document.querySelector("#removeAllNotes");
 
 // Объект и 4 массива
 let notes = {
@@ -208,6 +209,20 @@ const removeNote = (event) => {
   addEventDrag();
 };
 
+removeAllNotes.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const list = event.target.closest(".list");
+  const listWrap = list.querySelector(".wrapper");
+  const listId = listWrap.getAttribute("id");
+
+  notes[listId] = [];
+
+  drawList(listId, listWrap);
+
+  addEventDrag();
+});
+
 modal.addEventListener("click", (event) => {
   event.preventDefault();
   if (event.target.closest("#btnModalApply")) {
@@ -254,11 +269,11 @@ function dragStart(event) {
 function dragEnd() {
   this.className = "list__card";
 
-  if (!(bufArray === [])) {
+  if (!bufArray.length) {
     pushArray(listId, bufArray[0].title, bufArray[0].description);
-    bufArray = [];
-    listId = 0;
   }
+  listId = 0;
+  bufArray = [];
 }
 
 // Drop
@@ -285,13 +300,11 @@ function dragDrop(event) {
 
       const target = event.currentTarget;
       const list = target.querySelector(".wrapper");
-      const listId = list.getAttribute("id");
+      const listDropId = list.getAttribute("id");
 
       appendArrayCard(card, list);
-      pushArray(listId, bufArray[0].title, bufArray[0].description);
+      pushArray(listDropId, bufArray[0].title, bufArray[0].description);
 
-      bufArray = [];
-      listId = 0;
       break;
     }
   }

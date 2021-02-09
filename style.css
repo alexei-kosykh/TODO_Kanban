@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 body {
   background-color: darksalmon;
 }
@@ -7,12 +10,9 @@ body {
 }
 
 .list__card {
-  /* background-image: url(http://source.unsplash.com/random/150x150); */
-  position: relative;
-  height: 150px;
-  width: 150px;
-  top: 5px;
-  left: 5px;
+  width: 100%;
+  padding: 1px;
+  height: 100%;
   cursor: pointer;
 }
 
@@ -20,6 +20,7 @@ body {
   display: inline-block;
   height: 100%;
   min-height: 200px;
+  max-width: 200px;
   width: 20%;
   margin: 10px;
   border: 3px solid salmon;
@@ -27,9 +28,10 @@ body {
 }
 
 .wrapper {
-  display: inline-block;
+  display: block;
+  margin: 0 auto;
   height: 100%;
-  width: 100%;
+  width: 95%;
   background-color: white;
 }
 
@@ -46,10 +48,11 @@ body {
   display: none;
 }
 
-.list__card {
-  width: 167px;
-  padding: 1px;
-  height: 100%;
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 10px;
 }
 
 .list-border {
@@ -114,6 +117,15 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
 }
+.button-remove-all {
+  margin: 0 84%;
+  display: flex;
+  justify-content: flex-end;
+  background-image: url(images/icons8-remove-100.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 
 input {
   outline: none;
@@ -123,8 +135,9 @@ p {
 }
 .input {
   border: 3px solid rgb(255, 100, 61);
-  width: 150px;
-  height: 20px;
+  width: 90%;
+  max-width: 200px;
+  height: 30px;
 }
 
 .button {
@@ -137,6 +150,11 @@ p {
 
 .mrg-b-30 {
   margin: 0 10px 10px;
+}
+
+.remove {
+  display: flex;
+  justify-content: center;
 }
 
 .modal {
@@ -164,4 +182,27 @@ p {
 
 .modal__input {
   width: 90%;
+}
+
+@media (max-width: 900px) {
+  .list {
+    width: 100%;
+  }
+  .wrapper {
+    width: 170px;
+  }
+  .form {
+    width: 180px;
+  }
+  .input {
+    width: 137px;
+  }
+  .list__card {
+    width: 170px;
+    padding: 4px;
+  }
+  .list-border {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 }
